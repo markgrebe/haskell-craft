@@ -11,8 +11,8 @@ License-file:        LICENSE
 Author:              Mark Grebe
 Maintainer:          mark.grebe@ku.edu
 Copyright:           Copyright (c) 2015 The University of Kansas
-Homepage:            https://github.com/ku-fpg/haskell-craft/wiki
-Bug-reports:         https://github.com/ku-fpg/haskell-craft/issues
+Homepage:            https://github.com/markgrebe/haskell-craft/wiki
+Bug-reports:         https://github.com/markgrebe/haskell-craft/issues
 Category:            Graphics
 Build-type:          Simple
 Stability:           beta
@@ -34,4 +34,4 @@ Library
 
 source-repository head
   type:     git
-  location: git://github.com/ku-fpg/haskell-craft.git
+  location: git://github.com/markgrebe/haskell-craft.git
