@@ -61,8 +61,23 @@ parseIntList s = case parseCSVInts s of
     Right is -> Just is
     _        -> Nothing
 
---parseEventList :: String -> Maybe [(Int,Int,Int,Int,Int)]
---parseEventList s = case parseEvents s of
---    Right is -> Just is
---    _        -> Nothing
+parseEventList :: String -> Maybe [(Int,Int,Int,Int,Int)]
+parseEventList s = case parseEvents s of
+    Right as -> Just (toEvents as)
+    _          -> Nothing
+  where
+    toEvents :: [[Int]] -> [(Int,Int,Int,Int,Int)]
+    toEvents [] = []
+    toEvents es =  (toEvent (head es)) ++ (toEvents (tail es))
+
+    toEvent :: [Int] -> [(Int,Int,Int,Int,Int)]
+    toEvent a = case a of
+        [a,b,c,d,e] -> [(a,b,c,d,e)]
+        _           -> []
+
+
+
+
+
+
 

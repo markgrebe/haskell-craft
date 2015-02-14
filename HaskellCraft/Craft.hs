@@ -225,7 +225,7 @@ parseQueryResult (PlayerGetTile {}) o         = parseThreeCSVInts o
 parseQueryResult (PlayerGetPos {}) o          = parseThreeCSVFloats o
 parseQueryResult (EntityGetTile {}) o         = parseThreeCSVInts o
 parseQueryResult (EntityGetPos {}) o          = parseThreeCSVFloats o
--- parseQueryResult (EventsBlockHits {}) o       = parseEvents o
+parseQueryResult (EventsBlockHits {}) o       = parseEventList o
 
 worldGetBlock :: (Int, Int, Int) -> Craft (Maybe Int)
 worldGetBlock = Query . WorldGetBlock
