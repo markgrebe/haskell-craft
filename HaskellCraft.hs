@@ -19,6 +19,7 @@ import           Data.Text.Lazy.IO hiding (hGetLine)
 import           Network.Socket hiding (send)
 import           System.IO hiding (hPutStr)
 
+import           HaskellCraft.Block
 import           HaskellCraft.Craft
 
 import           Prelude hiding (show)
@@ -94,13 +95,13 @@ sendToCraft hand cmds = do
     hPutStr hand lc
     hFlush hand
 
-testIt :: IO (Int, Int, (Int,Int,Int))
+testIt :: IO (Block, Block, (Int,Int,Int))
 testIt = do
     ch <- openCraft "192.168.200.107" "4711"
     b <- send ch $ do
        a <- worldGetBlock (50, 50, 50)
-       worldSetBlock (19, 1, -9, 78)
-       worldSetBlock (18, 1, -10, 78)
+       worldSetBlock (19, 1, -9, Snow)
+       worldSetBlock (18, 1, -10, Snow)
        b <- worldGetBlock (20, 0, -10)
        c <- playerGetTile ()
        return (a,b,c)

@@ -1,5 +1,7 @@
 module HaskellCraft.Parser where
 
+import HaskellCraft.Block
+
 import Text.Parsec
 import Control.Applicative hiding ((<|>), many)
 
@@ -41,10 +43,10 @@ parseOneInt s = case parseCSVInts s of
     Right [i] -> i
     _         -> 0
 
-parseTwoCSVInts :: String -> (Int, Int)
-parseTwoCSVInts s = case parseCSVInts s of
-    Right [a,b] -> (a,b)
-    _           -> (0,0)
+parseBlockIntCSV :: String -> (Block, Int)
+parseBlockIntCSV s = case parseCSVInts s of
+    Right [a,b] -> (toEnum a,b)
+    _           -> (Unknown,0)
 
 parseThreeCSVInts :: String -> (Int, Int, Int)
 parseThreeCSVInts s = case parseCSVInts s of
@@ -55,6 +57,16 @@ parseThreeCSVFloats :: String -> (Double, Double, Double)
 parseThreeCSVFloats s = case parseCSVFloats s of
     Right [a,b,c] -> (a,b,c)
     _             -> (0.0,0.0,0.0)
+
+parseMaybeThreeCSVInts :: String -> Maybe (Int, Int, Int)
+parseMaybeThreeCSVInts s = case parseCSVInts s of
+    Right [a,b,c] -> Just (a,b,c)
+    _             -> Nothing
+
+parseMaybeThreeCSVFloats :: String -> Maybe (Double, Double, Double)
+parseMaybeThreeCSVFloats s = case parseCSVFloats s of
+    Right [a,b,c] -> Just (a,b,c)
+    _             -> Nothing
 
 parseIntList :: String -> [Int]
 parseIntList s = case parseBSVInts s of

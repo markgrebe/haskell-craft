@@ -9,6 +9,7 @@ import           Control.Monad (ap, liftM2)
 import           Data.Monoid
 import           Data.Text.Lazy.Builder
 
+import           HaskellCraft.Block
 import           HaskellCraft.Parser
 
 import           Prelude hiding (Show)
@@ -45,10 +46,10 @@ instance Monoid a => Monoid (Craft a) where
 
 -- Mincraft Pi API methods with no return values
 data Method
-        = WorldSetBlock (Int, Int, Int, Int)
-        | WorldSetBlockWithData (Int, Int, Int, Int, Int)
-        | WorldSetBlocks (Int, Int, Int, Int, Int, Int, Int)
-        | WorldSetBlocksWithData (Int, Int, Int, Int, Int, Int, Int, Int)
+        = WorldSetBlock (Int, Int, Int, Block)
+        | WorldSetBlockWithData (Int, Int, Int, Block, Int)
+        | WorldSetBlocks (Int, Int, Int, Int, Int, Int, Block)
+        | WorldSetBlocksWithData (Int, Int, Int, Int, Int, Int, Block, Int)
         | WorldCheckpointSave
         | WorldCheckpointRestore
         | WorldSetting (WorldSettingT, Bool)
@@ -70,21 +71,21 @@ instance S.Show Method where
 instance T.Show Method where
   showb (WorldSetBlock (x,y,z,b)) = "world.setBlock("
          <> showb x <> singleton ',' <> showb y <> singleton ','
-         <> showb z <> singleton ',' <> showb b <> ")\n"
+         <> showb z <> singleton ',' <> showb (fromEnum b) <> ")\n"
   showb (WorldSetBlockWithData (x,y,z,b,d)) = "world.setBlockWithData("
          <> showb x <> singleton ',' <> showb y <> singleton ','
-         <> showb z <> singleton ',' <> showb b <> singleton ','
+         <> showb z <> singleton ',' <> showb (fromEnum b) <> singleton ','
          <> showb d <> ")\n"
   showb (WorldSetBlocks (x1,y1,z1,x2,y2,z2,b)) = "world.setBlocks("
          <> showb x1 <> singleton ',' <> showb y1 <> singleton ','
          <> showb z1 <> singleton ',' <> showb x2 <> singleton ','
          <> showb y2 <> singleton ',' <> showb z2 <> singleton ','
-         <> showb b <> ")\n"
+         <> showb (fromEnum b) <> ")\n"
   showb (WorldSetBlocksWithData (x1,y1,z1,x2,y2,z2,b,d)) = "world.setBlocks("
          <> showb x1 <> singleton ',' <> showb y1 <> singleton ','
          <> showb z1 <> singleton ',' <> showb x2 <> singleton ','
          <> showb y2 <> singleton ',' <> showb z2 <> singleton ','
-         <> showb b <> singleton ',' <> showb d <> ")\n"
+         <> showb (fromEnum b) <> singleton ',' <> showb d <> ")\n"
   showb WorldCheckpointSave = "world.checkpoint.save()\n"
   showb WorldCheckpointRestore = "world.checkpoint.restore()\n"
   showb (WorldSetting (ws, b)) = "world.setting("
@@ -128,16 +129,16 @@ data PlayerSettingT
 instance T.Show PlayerSettingT where
   showb Autojump = "autojump"
 
-worldSetBlock :: (Int, Int, Int, Int) -> Craft ()
+worldSetBlock :: (Int, Int, Int, Block) -> Craft ()
 worldSetBlock = Method . WorldSetBlock
 
-worldSetBlockWithData :: (Int, Int, Int, Int, Int) -> Craft ()
+worldSetBlockWithData :: (Int, Int, Int, Block, Int) -> Craft ()
 worldSetBlockWithData = Method . WorldSetBlockWithData
 
-worldSetBlocks :: (Int, Int, Int, Int, Int, Int, Int) -> Craft ()
+worldSetBlocks :: (Int, Int, Int, Int, Int, Int, Block) -> Craft ()
 worldSetBlocks = Method . WorldSetBlocks
 
-worldSetBlocksWithData :: (Int, Int, Int, Int, Int, Int, Int, Int) -> Craft ()
+worldSetBlocksWithData :: (Int, Int, Int, Int, Int, Int, Block, Int) -> Craft ()
 worldSetBlocksWithData = Method . WorldSetBlocksWithData
 
 worldCheckpointSave :: () -> Craft ()
@@ -186,14 +187,14 @@ eventsClear () = Method EventsClear
 
 -- Mincraft Pi API methods with return values
 data Query :: * -> * where
-        WorldGetBlock :: (Int, Int, Int) -> Query Int
-        WorldGetBlockWithData :: (Int, Int, Int) -> Query (Int, Int)
+        WorldGetBlock :: (Int, Int, Int) -> Query Block
+        WorldGetBlockWithData :: (Int, Int, Int) -> Query (Block, Int)
         WorldGetHeight :: (Int, Int) -> Query Int
         WorldGetPlayerIds :: Query [Int]
         PlayerGetTile :: Query (Int, Int, Int)
         PlayerGetPos :: Query (Double, Double, Double)
-        EntityGetTile :: Int -> Query (Int, Int, Int)
-        EntityGetPos :: Int -> Query (Double, Double, Double)
+        EntityGetTile :: Int -> Query (Maybe (Int, Int, Int))
+        EntityGetPos :: Int -> Query (Maybe (Double, Double, Double))
         EventsBlockHits :: Query [(Int, Int, Int, Int, Int)]
 
 instance S.Show (Query a) where
@@ -218,20 +219,20 @@ instance T.Show (Query a) where
 
 -- This is how we take our value to bits
 parseQueryResult :: Query a -> String -> a
-parseQueryResult (WorldGetBlock {}) o         = parseOneInt o
-parseQueryResult (WorldGetBlockWithData {}) o = parseTwoCSVInts o
+parseQueryResult (WorldGetBlock {}) o         = toEnum $ parseOneInt o
+parseQueryResult (WorldGetBlockWithData {}) o = parseBlockIntCSV o
 parseQueryResult (WorldGetHeight {}) o        = parseOneInt o
 parseQueryResult (WorldGetPlayerIds {}) o     = parseIntList o
 parseQueryResult (PlayerGetTile {}) o         = parseThreeCSVInts o
 parseQueryResult (PlayerGetPos {}) o          = parseThreeCSVFloats o
-parseQueryResult (EntityGetTile {}) o         = parseThreeCSVInts o
-parseQueryResult (EntityGetPos {}) o          = parseThreeCSVFloats o
+parseQueryResult (EntityGetTile {}) o         = parseMaybeThreeCSVInts o
+parseQueryResult (EntityGetPos {}) o          = parseMaybeThreeCSVFloats o
 parseQueryResult (EventsBlockHits {}) o       = parseEventList o
 
-worldGetBlock :: (Int, Int, Int) -> Craft Int
+worldGetBlock :: (Int, Int, Int) -> Craft Block
 worldGetBlock = Query . WorldGetBlock
 
-worldGetBlockWithData :: (Int, Int, Int) -> Craft (Int, Int)
+worldGetBlockWithData :: (Int, Int, Int) -> Craft (Block, Int)
 worldGetBlockWithData = Query . WorldGetBlockWithData
 
 worldGetHeight :: (Int, Int) -> Craft Int
@@ -246,10 +247,10 @@ playerGetTile () = Query PlayerGetTile
 playerGetPos :: () -> Craft (Double, Double, Double)
 playerGetPos () = Query PlayerGetPos
 
-entityGetTile :: Int -> Craft (Int, Int, Int)
+entityGetTile :: Int -> Craft (Maybe (Int, Int, Int))
 entityGetTile = Query . EntityGetTile
 
-entityGetPos :: Int -> Craft (Double, Double, Double)
+entityGetPos :: Int -> Craft (Maybe (Double, Double, Double))
 entityGetPos = Query . EntityGetPos
 
 eventsBlockHits :: () -> Craft [(Int, Int, Int, Int, Int)]
