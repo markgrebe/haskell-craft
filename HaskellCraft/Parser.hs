@@ -46,7 +46,7 @@ parseOneInt s = case parseCSVInts s of
 parseBlockIntCSV :: String -> (Block, Int)
 parseBlockIntCSV s = case parseCSVInts s of
     Right [a,b] -> (toEnum a,b)
-    _           -> (Unknown,0)
+    _           -> (Unknown 255,0)
 
 parseThreeCSVInts :: String -> (Int, Int, Int)
 parseThreeCSVInts s = case parseCSVInts s of

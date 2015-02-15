@@ -16,9 +16,12 @@ data Block = Air | Stone | Grass | Dirt | Cobblestone | Wood_planks | Sapling |
     Stairs_wood | Chest | Diamond_ore | Diamond_block | Crafting_table |
     Farmland | Furnace_inactive | Furnace_active | Door_wood | Ladder |
     Stairs_cobblestone | Door_iron | Redstone_ore | Snow | Ice | Snow_block |
-    Cactus | Clay | Sugar_cane | Fence | Glowstone_block | Bedrock_invisible |
-    Stone_brick | Glass_pane | Melon | Fence_gate | Glowing_obsidian |
-    Nether_reactor_core | Unknown
+    Cactus | Clay | Sugar_cane | Fence | Netherrack | Glowstone_block |
+    Bedrock_invisible | Trapdoor | Stone_brick | Glass_pane | Melon |
+    Melon_seeds | Fence_gate | Stairs_brick | Stairs_stone_brick |
+    Nether_brick | Stairs_nether_brick | Stairs_sandstone | Quartz_block |
+    Stairs_quartz | Stone_cutter | Glowing_obsidian | Nether_reactor_core |
+    Unknown Int
     deriving (Eq,Ord,Show)
 
 instance T.Show Block where
@@ -87,15 +90,26 @@ instance Enum Block where
     toEnum 82   = Clay
     toEnum 83   = Sugar_cane
     toEnum 85   = Fence
+    toEnum 87   = Netherrack
     toEnum 89   = Glowstone_block
     toEnum 95   = Bedrock_invisible
+    toEnum 96   = Trapdoor
     toEnum 98   = Stone_brick
     toEnum 102  = Glass_pane
     toEnum 103  = Melon
+    toEnum 105  = Melon_seeds
     toEnum 107  = Fence_gate
+    toEnum 108  = Stairs_brick
+    toEnum 109  = Stairs_stone_brick
+    toEnum 112  = Nether_brick
+    toEnum 114  = Stairs_nether_brick
+    toEnum 128  = Stairs_sandstone
+    toEnum 155  = Quartz_block
+    toEnum 156  = Stairs_quartz
+    toEnum 245  = Stone_cutter
     toEnum 246  = Glowing_obsidian
     toEnum 247  = Nether_reactor_core
-    toEnum _    = Unknown
+    toEnum i    = Unknown i
 
     fromEnum Air                 = 0
     fromEnum Stone               = 1
@@ -161,30 +175,23 @@ instance Enum Block where
     fromEnum Clay                = 82
     fromEnum Sugar_cane          = 83
     fromEnum Fence               = 85
+    fromEnum Netherrack          = 87
     fromEnum Glowstone_block     = 89
     fromEnum Bedrock_invisible   = 95
+    fromEnum Trapdoor            = 96
     fromEnum Stone_brick         = 98
     fromEnum Glass_pane          = 102
     fromEnum Melon               = 103
+    fromEnum Melon_seeds         = 105
     fromEnum Fence_gate          = 107
+    fromEnum Stairs_brick        = 108
+    fromEnum Stairs_stone_brick  = 109
+    fromEnum Nether_brick        = 112
+    fromEnum Stairs_nether_brick = 114
+    fromEnum Stairs_sandstone    = 128
+    fromEnum Quartz_block        = 155
+    fromEnum Stairs_quartz       = 156
+    fromEnum Stone_cutter        = 245
     fromEnum Glowing_obsidian    = 246
     fromEnum Nether_reactor_core = 247
-    fromEnum Unknown             = 511
-
-
-{-
-Stairs_stone         67
-Netherrack           87
-Trapdoor             96
-Melon_seeds         105
-Stairs_brick        108
-Stairs_stone_brick  109
-Nether_brick        112
-Stairs_nether_brick 114
-Stairs_sandstone    128
-Quartz_block        155
-Stairs_quartz       156
-Stone_cutter        245
-Painting            321
-Bone_meal           351
--}
+    fromEnum (Unknown i)         = i
