@@ -78,7 +78,6 @@ send hand commands =
           sendToCraft h (cmds <> showb query)
           s <- hGetLine h
           send' h (k (parseQueryResult query s)) mempty
---          send' h (k (parseQueryResult query (trace (GS.show ("Received '" ++ s ++ "'")) s))) mempty
 
       send' :: Handle -> Craft a -> Builder -> IO a
       -- Most of these can be factored out, except return
@@ -93,10 +92,9 @@ sendToCraft :: Handle -> Builder -> IO ()
 sendToCraft hand cmds = do
     let lc = toLazyText cmds
     hPutStr hand lc
---    hPutStr hand (trace (GS.show lc) lc)
     hFlush hand
 
-testIt :: IO (Maybe Int, Maybe Int, Maybe (Int,Int,Int))
+testIt :: IO (Int, Int, (Int,Int,Int))
 testIt = do
     ch <- openCraft "192.168.200.107" "4711"
     b <- send ch $ do

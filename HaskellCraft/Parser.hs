@@ -36,35 +36,35 @@ parseCSVFloats input = parse (groupFloats (char ',')) "(unknown)" input
 parseEvents :: String -> Either ParseError [[Int]]
 parseEvents input = parse groupEvents "(unknown)" input
 
-parseOneInt :: String -> Maybe Int
+parseOneInt :: String -> Int
 parseOneInt s = case parseCSVInts s of
-    Right [i] -> Just i
-    _         -> Nothing
+    Right [i] -> i
+    _         -> 0
 
-parseTwoCSVInts :: String -> Maybe (Int, Int)
+parseTwoCSVInts :: String -> (Int, Int)
 parseTwoCSVInts s = case parseCSVInts s of
-    Right [a,b] -> Just (a,b)
-    _           -> Nothing
+    Right [a,b] -> (a,b)
+    _           -> (0,0)
 
-parseThreeCSVInts :: String -> Maybe (Int, Int, Int)
+parseThreeCSVInts :: String -> (Int, Int, Int)
 parseThreeCSVInts s = case parseCSVInts s of
-    Right [a,b,c] -> Just (a,b,c)
-    _             -> Nothing
+    Right [a,b,c] -> (a,b,c)
+    _             -> (0,0,0)
 
-parseThreeCSVFloats :: String -> Maybe (Double, Double, Double)
+parseThreeCSVFloats :: String -> (Double, Double, Double)
 parseThreeCSVFloats s = case parseCSVFloats s of
-    Right [a,b,c] -> Just (a,b,c)
-    _             -> Nothing
+    Right [a,b,c] -> (a,b,c)
+    _             -> (0.0,0.0,0.0)
 
-parseIntList :: String -> Maybe [Int]
+parseIntList :: String -> [Int]
 parseIntList s = case parseBSVInts s of
-    Right is -> Just is
-    _        -> Nothing
+    Right is -> is
+    _        -> []
 
-parseEventList :: String -> Maybe [(Int,Int,Int,Int,Int)]
+parseEventList :: String -> [(Int,Int,Int,Int,Int)]
 parseEventList s = case parseEvents s of
-    Right as -> Just (toEvents as)
-    _          -> Nothing
+    Right as -> toEvents as
+    _        -> []
   where
     toEvents :: [[Int]] -> [(Int,Int,Int,Int,Int)]
     toEvents [] = []

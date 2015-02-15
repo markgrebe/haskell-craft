@@ -186,15 +186,15 @@ eventsClear () = Method EventsClear
 
 -- Mincraft Pi API methods with return values
 data Query :: * -> * where
-        WorldGetBlock :: (Int, Int, Int) -> Query (Maybe Int)
-        WorldGetBlockWithData :: (Int, Int, Int) -> Query (Maybe (Int, Int))
-        WorldGetHeight :: (Int, Int) -> Query (Maybe Int)
-        WorldGetPlayerIds :: Query (Maybe [Int])
-        PlayerGetTile :: Query (Maybe (Int, Int, Int))
-        PlayerGetPos :: Query (Maybe (Double, Double, Double))
-        EntityGetTile :: Int -> Query (Maybe (Int, Int, Int))
-        EntityGetPos :: Int -> Query (Maybe (Double, Double, Double))
-        EventsBlockHits :: Query (Maybe [(Int, Int, Int, Int, Int)])
+        WorldGetBlock :: (Int, Int, Int) -> Query Int
+        WorldGetBlockWithData :: (Int, Int, Int) -> Query (Int, Int)
+        WorldGetHeight :: (Int, Int) -> Query Int
+        WorldGetPlayerIds :: Query [Int]
+        PlayerGetTile :: Query (Int, Int, Int)
+        PlayerGetPos :: Query (Double, Double, Double)
+        EntityGetTile :: Int -> Query (Int, Int, Int)
+        EntityGetPos :: Int -> Query (Double, Double, Double)
+        EventsBlockHits :: Query [(Int, Int, Int, Int, Int)]
 
 instance S.Show (Query a) where
   showsPrec p = (++) . toString . showbPrec p
@@ -228,29 +228,29 @@ parseQueryResult (EntityGetTile {}) o         = parseThreeCSVInts o
 parseQueryResult (EntityGetPos {}) o          = parseThreeCSVFloats o
 parseQueryResult (EventsBlockHits {}) o       = parseEventList o
 
-worldGetBlock :: (Int, Int, Int) -> Craft (Maybe Int)
+worldGetBlock :: (Int, Int, Int) -> Craft Int
 worldGetBlock = Query . WorldGetBlock
 
-worldGetBlockWithData :: (Int, Int, Int) -> Craft ( Maybe (Int, Int))
+worldGetBlockWithData :: (Int, Int, Int) -> Craft (Int, Int)
 worldGetBlockWithData = Query . WorldGetBlockWithData
 
-worldGetHeight :: (Int, Int) -> Craft (Maybe Int)
+worldGetHeight :: (Int, Int) -> Craft Int
 worldGetHeight = Query . WorldGetHeight
 
-worldGetPlayerIds :: () -> Craft (Maybe [Int])
+worldGetPlayerIds :: () -> Craft [Int]
 worldGetPlayerIds () = Query WorldGetPlayerIds
 
-playerGetTile :: () -> Craft (Maybe (Int, Int, Int))
+playerGetTile :: () -> Craft (Int, Int, Int)
 playerGetTile () = Query PlayerGetTile
 
-playerGetPos :: () -> Craft (Maybe (Double, Double, Double))
+playerGetPos :: () -> Craft (Double, Double, Double)
 playerGetPos () = Query PlayerGetPos
 
-entityGetTile :: Int -> Craft (Maybe (Int, Int, Int))
+entityGetTile :: Int -> Craft (Int, Int, Int)
 entityGetTile = Query . EntityGetTile
 
-entityGetPos :: Int -> Craft (Maybe (Double, Double, Double))
+entityGetPos :: Int -> Craft (Double, Double, Double)
 entityGetPos = Query . EntityGetPos
 
-eventsBlockHits :: () -> Craft (Maybe [(Int, Int, Int, Int, Int)])
+eventsBlockHits :: () -> Craft [(Int, Int, Int, Int, Int)]
 eventsBlockHits () = Query EventsBlockHits
