@@ -209,6 +209,7 @@ instance T.Show (Query a) where
                                                     <> showb z <> ")\n"
   showb (WorldGetHeight (x,z)) = "world.getHeight(" <> showb x <> singleton ','
                                                     <> showb z <> ")\n"
+  showb WorldGetPlayerIds = "world.getPlayerIds()\n"
   showb PlayerGetTile = "player.getTile()\n"
   showb PlayerGetPos = "player.getPos()\n"
   showb (EntityGetTile i) = "entity.getTile(" <> showb i <> ")\n"

@@ -57,7 +57,7 @@ parseThreeCSVFloats s = case parseCSVFloats s of
     _             -> Nothing
 
 parseIntList :: String -> Maybe [Int]
-parseIntList s = case parseCSVInts s of
+parseIntList s = case parseBSVInts s of
     Right is -> Just is
     _        -> Nothing
 
