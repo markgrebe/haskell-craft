@@ -19,6 +19,7 @@ import           Data.Text.Lazy.IO hiding (hGetLine)
 import           Network.Socket hiding (send)
 import           System.IO hiding (hPutStr)
 
+import           HaskellCraft.Block
 import           HaskellCraft.Craft
 
 import           Prelude hiding (show)
@@ -78,7 +79,6 @@ send hand commands =
           sendToCraft h (cmds <> showb query)
           s <- hGetLine h
           send' h (k (parseQueryResult query s)) mempty
---          send' h (k (parseQueryResult query (trace (GS.show ("Received '" ++ s ++ "'")) s))) mempty
 
       send' :: Handle -> Craft a -> Builder -> IO a
       -- Most of these can be factored out, except return
@@ -93,16 +93,15 @@ sendToCraft :: Handle -> Builder -> IO ()
 sendToCraft hand cmds = do
     let lc = toLazyText cmds
     hPutStr hand lc
---    hPutStr hand (trace (GS.show lc) lc)
     hFlush hand
 
-testIt :: IO (Maybe Int, Maybe Int, Maybe (Int,Int,Int))
+testIt :: IO (Block, Block, (Int,Int,Int))
 testIt = do
     ch <- openCraft "192.168.200.107" "4711"
     b <- send ch $ do
        a <- worldGetBlock (50, 50, 50)
-       worldSetBlock (19, 1, -9, 78)
-       worldSetBlock (18, 1, -10, 78)
+       worldSetBlock (19, 1, -9, Snow)
+       worldSetBlock (18, 1, -10, Snow)
        b <- worldGetBlock (20, 0, -10)
        c <- playerGetTile ()
        return (a,b,c)

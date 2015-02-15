@@ -1,5 +1,7 @@
 module HaskellCraft.Parser where
 
+import HaskellCraft.Block
+
 import Text.Parsec
 import Control.Applicative hiding ((<|>), many)
 
@@ -36,35 +38,45 @@ parseCSVFloats input = parse (groupFloats (char ',')) "(unknown)" input
 parseEvents :: String -> Either ParseError [[Int]]
 parseEvents input = parse groupEvents "(unknown)" input
 
-parseOneInt :: String -> Maybe Int
+parseOneInt :: String -> Int
 parseOneInt s = case parseCSVInts s of
-    Right [i] -> Just i
-    _         -> Nothing
+    Right [i] -> i
+    _         -> 0
 
-parseTwoCSVInts :: String -> Maybe (Int, Int)
-parseTwoCSVInts s = case parseCSVInts s of
-    Right [a,b] -> Just (a,b)
-    _           -> Nothing
+parseBlockIntCSV :: String -> (Block, Int)
+parseBlockIntCSV s = case parseCSVInts s of
+    Right [a,b] -> (toEnum a,b)
+    _           -> (Unknown,0)
 
-parseThreeCSVInts :: String -> Maybe (Int, Int, Int)
+parseThreeCSVInts :: String -> (Int, Int, Int)
 parseThreeCSVInts s = case parseCSVInts s of
-    Right [a,b,c] -> Just (a,b,c)
-    _             -> Nothing
+    Right [a,b,c] -> (a,b,c)
+    _             -> (0,0,0)
 
-parseThreeCSVFloats :: String -> Maybe (Double, Double, Double)
+parseThreeCSVFloats :: String -> (Double, Double, Double)
 parseThreeCSVFloats s = case parseCSVFloats s of
+    Right [a,b,c] -> (a,b,c)
+    _             -> (0.0,0.0,0.0)
+
+parseMaybeThreeCSVInts :: String -> Maybe (Int, Int, Int)
+parseMaybeThreeCSVInts s = case parseCSVInts s of
     Right [a,b,c] -> Just (a,b,c)
     _             -> Nothing
 
-parseIntList :: String -> Maybe [Int]
-parseIntList s = case parseBSVInts s of
-    Right is -> Just is
-    _        -> Nothing
+parseMaybeThreeCSVFloats :: String -> Maybe (Double, Double, Double)
+parseMaybeThreeCSVFloats s = case parseCSVFloats s of
+    Right [a,b,c] -> Just (a,b,c)
+    _             -> Nothing
 
-parseEventList :: String -> Maybe [(Int,Int,Int,Int,Int)]
+parseIntList :: String -> [Int]
+parseIntList s = case parseBSVInts s of
+    Right is -> is
+    _        -> []
+
+parseEventList :: String -> [(Int,Int,Int,Int,Int)]
 parseEventList s = case parseEvents s of
-    Right as -> Just (toEvents as)
-    _          -> Nothing
+    Right as -> toEvents as
+    _        -> []
   where
     toEvents :: [[Int]] -> [(Int,Int,Int,Int,Int)]
     toEvents [] = []
