@@ -72,7 +72,7 @@ instance T.Show Method where
   showb (WorldSetBlock (x,y,z,b)) = "world.setBlock("
          <> showb x <> singleton ',' <> showb y <> singleton ','
          <> showb z <> singleton ',' <> showb (fromEnum b) <> ")\n"
-  showb (WorldSetBlockWithData (x,y,z,b,d)) = "world.setBlockWithData("
+  showb (WorldSetBlockWithData (x,y,z,b,d)) = "world.setBlock("
          <> showb x <> singleton ',' <> showb y <> singleton ','
          <> showb z <> singleton ',' <> showb (fromEnum b) <> singleton ','
          <> showb d <> ")\n"
@@ -90,7 +90,7 @@ instance T.Show Method where
   showb WorldCheckpointRestore = "world.checkpoint.restore()\n"
   showb (WorldSetting (ws, b)) = "world.setting("
          <> showb ws <> if b then "1)\n" else "0)\n"
-  showb (ChatPost s) = "chat.Post(" <> showb s <> ")\n"
+  showb (ChatPost s) = "chat.post(" <> showb s <> ")\n"
   showb (PlayerSetTile (x,y,z)) = "player.setTile("
          <> showb x <> singleton ',' <> showb y <> singleton ','
          <> showb z <> ")\n"

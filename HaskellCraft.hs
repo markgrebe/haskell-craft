@@ -78,6 +78,7 @@ testIt :: IO (Block, Block, (Int,Int,Int))
 testIt = do
     ch <- openCraft "192.168.200.107" "4711"
     b <- send ch $ do
+       chatPost("Hello")
        a <- worldGetBlock (50, 50, 50)
        worldSetBlock (19, 1, -9, Snow)
        worldSetBlock (18, 1, -10, Snow)
