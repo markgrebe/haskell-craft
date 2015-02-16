@@ -1,10 +1,7 @@
 {-# LANGUAGE CPP, GADTs, OverloadedStrings, ScopedTypeVariables #-}
 
--- | blank-canvas is a Haskell binding to the complete HTML5 Canvas
---   API. blank-canvas allows Haskell users to write, in Haskell,
---   interactive images onto their web browsers. blank-canvas gives
---   the users a single full-window canvas, and provides many
---   well-documented functions for rendering images.
+-- | haskell-carft is a Haskell binding to the Minecraft Pi
+--   API.
 
 module HaskellCraft where
 
@@ -29,23 +26,8 @@ import           Text.Show.Text (showb)
 import           Debug.Trace
 import qualified GHC.Show as GS (show)
 
--- | blankCanvas is the main entry point into blank-canvas.
--- A typical invocation would be
+-- A typical invocation would be TBD
 --
--- >{-# LANGUAGE OverloadedStrings #-}
--- >module Main where
--- >
--- >import HaskellCraft
--- >
--- >main = do
--- >       hand <- openCraft
--- >       send hand $ do
--- >                moveTo(50,50)
--- >                lineTo(200,100)
--- >                lineWidth 10
--- >                strokeStyle "red"
--- >                stroke()
--- >
 
 openCraft :: HostName -> String -> IO Handle
 openCraft hostname port = do
