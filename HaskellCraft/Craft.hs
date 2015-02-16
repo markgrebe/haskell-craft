@@ -112,7 +112,7 @@ instance T.Show Method where
   showb CameraSetFixed = "camera.setFixed()\n"
   showb (CameraSetPos (x,y,z)) = "camera.setPos("
          <> showb x <> singleton ',' <> showb y <> singleton ','
-         <> showb x <> ")\n"
+         <> showb z <> ")\n"
   showb EventsClear = "events.clear()\n"
 
 data WorldSettingT

@@ -83,7 +83,7 @@ parseEventList s = case parseEvents s of
     toEvents es =  (toEvent (head es)) ++ (toEvents (tail es))
 
     toEvent :: [Int] -> [(Int,Int,Int,Int,Int)]
-    toEvent a = case a of
+    toEvent is = case is of
         [a,b,c,d,e] -> [(a,b,c,d,e)]
         _           -> []
 

@@ -23,9 +23,6 @@ import           Prelude hiding (show)
 
 import           Text.Show.Text (showb)
 
-import           Debug.Trace
-import qualified GHC.Show as GS (show)
-
 -- A typical invocation would be TBD
 --
 
