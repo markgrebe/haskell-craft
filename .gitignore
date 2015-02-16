@@ -1,3 +1,11 @@
 .cabal-sandbox/
 cabal.sandbox.config
-dist/
+dist/*
+*.o
+*.hi
+*.dyn_o
+*.dyn_hi
+*.swp
+*.swo
+cabal.config
+examples/dist/*
