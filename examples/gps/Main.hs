@@ -3,6 +3,7 @@ module Main (main) where
 import HaskellCraft
 import HaskellCraft.Block
 import HaskellCraft.Craft
+import HaskellCraft.Utils
 
 import System.IO
 
@@ -22,9 +23,9 @@ loop oldPos = do
     -- If it has changed, send a chat message with the position and the
     -- type of block they are standing on.
     if pos /= oldPos then do
-        let x = getx pos
-            y = gety pos
-            z = getz pos
+        let x = vector3x pos
+            y = vector3y pos
+            z = vector3z pos
         block <- worldGetBlock(x, y-1, z)
         chatPost(show x ++ " " ++ show y ++ " " ++
                  show z ++ " "++ show block)
@@ -32,7 +33,3 @@ loop oldPos = do
     else
         return()
     loop (if pos /= oldPos then pos else oldPos)
-  where
-    getx (x,y,z) = x
-    gety (x,y,z) = y
-    getz (x,y,z) = z
