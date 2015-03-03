@@ -32,4 +32,4 @@ loop oldPos = do
         return ()
     else
         return()
-    loop (if pos /= oldPos then pos else oldPos)
+    loop pos
