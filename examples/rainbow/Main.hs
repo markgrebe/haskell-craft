@@ -22,28 +22,32 @@ main :: IO ()
 main = do
     -- Open a connection to the Minecraft game
     ch <- openCraft "192.168.200.107" "4711"
-    -- Get the initial player position
     send ch $ do
+        -- Get the initial player position
         pos <- playerGetTile ()
         let x = vector3x pos
             y = vector3y pos
             z = vector3z pos
+        -- Erase the rectangle where the rainbow will go
         worldSetBlocks(x+1,y,z+1,x+truncate(len)+1,y+truncate(height),z+1,Air)
-        loop (x+1) y (z+1) 0.0
+        -- Draw the rainbow slightly offset from player position
+        rainbow (x+1) y (z+1) 0.0
 
-bow :: Int -> Int -> Int -> Int -> Craft()
-bow x y z c = do
+-- Draw one vertical segment of the rainbow recursively
+bowsegment :: Int -> Int -> Int -> Int -> Craft()
+bowsegment x y z c = do
     worldSetBlockWithData(x,y+c,z,Wool,colors!!c)
     if c < (length colors) - 1 then
-        bow x y z (c+1)
+        bowsegment x y z (c+1)
     else
         return()
 
-loop :: Int -> Int -> Int -> Double -> Craft ()
-loop x y z t = do
+-- Draw the rainbow recursively
+rainbow :: Int -> Int -> Int -> Double -> Craft ()
+rainbow x y z t = do
     let dy = truncate $ sin(t/len * pi) * height
-    bow (x+truncate(t)) (y+dy) z 0
+    bowsegment (x+truncate(t)) (y+dy) z 0
     if t < len then
-        loop x y z (t+1.0)
+        rainbow x y z (t+1.0)
     else
        return ()
